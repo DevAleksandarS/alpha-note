@@ -20,6 +20,12 @@ const reducer = (state, action) => {
         text: state.text,
         color: action.payload.color,
       };
+    case "RESET":
+      return {
+        title: "",
+        text: "",
+        color: "",
+      };
     default:
       return state;
   }
@@ -39,13 +45,13 @@ const checkInput = (state) => {
 };
 
 function InputNotes({ createNote }) {
-  const [bla, setBla] = useState("");
-
   const [state, dispatch] = useReducer(reducer, {
     title: "",
     text: "",
     color: "",
   });
+
+  const textSign = null;
 
   return (
     <div className="input-container">
@@ -57,12 +63,14 @@ function InputNotes({ createNote }) {
           onChange={(e) => {
             dispatch({ type: "ADD_TITLE", payload: { title: e.target.value } });
           }}
+          value={state.title}
         ></input>
         <select
           className="input border"
           onChange={(e) => {
             dispatch({ type: "ADD_COLOR", payload: { color: e.target.value } });
           }}
+          value={state.color}
         >
           <option value="" disabled selected hidden>
             Pick color...
@@ -75,7 +83,10 @@ function InputNotes({ createNote }) {
           className="btn-add"
           onClick={(e) => {
             e.preventDefault();
-            if (checkInput(state)) createNote(state);
+            if (checkInput(state)) {
+              createNote(state);
+              dispatch({ type: "RESET" });
+            }
           }}
         >
           Add
@@ -87,6 +98,7 @@ function InputNotes({ createNote }) {
         onChange={(e) => {
           dispatch({ type: "ADD_TEXT", payload: { text: e.target.value } });
         }}
+        value={state.text}
       ></textarea>
     </div>
   );
